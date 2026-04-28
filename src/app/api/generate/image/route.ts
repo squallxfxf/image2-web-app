@@ -1,3 +1,4 @@
+import type { Prisma } from '@prisma/client';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { generateImageSchema } from '@/lib/schemas';
@@ -21,7 +22,7 @@ export async function POST(req: Request) {
 
     const creditCost = calcCreditCost(body.count, body.quality, body.aspectRatio);
 
-    const job = await prisma.$transaction(async (tx) => {
+    const job = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const user = await tx.user.findUnique({ where: { id: userId } });
       if (!user || user.credits < creditCost) throw new AppError('积分不足', 400, 'INSUFFICIENT_CREDITS');
 

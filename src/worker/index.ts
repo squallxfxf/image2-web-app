@@ -1,3 +1,4 @@
+import type { Prisma } from '@prisma/client';
 import { Worker } from 'bullmq';
 import { prisma } from '@/lib/prisma';
 import { redis } from '@/lib/redis';
@@ -17,7 +18,7 @@ const sizeMap: Record<string, string> = {
 
 new Worker(
   IMAGE_QUEUE_NAME,
-  async (job) => {
+  async (job: any) => {
     const { jobId } = job.data as { jobId: string };
     const task = await prisma.generationJob.findUnique({ where: { id: jobId } });
     if (!task) return;
@@ -78,7 +79,7 @@ new Worker(
       await prisma.generationJob.update({ where: { id: task.id }, data: { status: 'completed' } });
     } catch (error) {
       logger.error('worker failed', error);
-      await prisma.$transaction(async (tx) => {
+      await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
         await tx.generationJob.update({ where: { id: task.id }, data: { status: 'refunded', errorMessage: (error as Error).message } });
         await tx.user.update({ where: { id: task.userId }, data: { credits: { increment: task.creditCost } } });
         await tx.creditTransaction.create({

@@ -1,12 +1,13 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
 
 export const metadata: Metadata = {
   title: 'Image2 Studio MVP',
   description: 'AI 图片生成与提示词管理平台'
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="zh-CN">
       <body>{children}</body>
