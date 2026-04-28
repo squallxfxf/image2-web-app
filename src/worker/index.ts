@@ -6,6 +6,7 @@ import { openai } from '@/lib/openai';
 import { uploadImageBuffer } from '@/lib/s3';
 import { generateBoundPrompts } from '@/lib/prompt-generation';
 import { logger } from '@/lib/logger';
+import { shouldRefundJob } from '@/lib/refund';
 
 const sizeMap: Record<string, string> = {
   '1:1': '1024x1024',
@@ -79,6 +80,22 @@ new Worker(
     } catch (error) {
       logger.error('worker failed', error);
       await prisma.$transaction(async (tx: any) => {
+        const currentJob = await tx.generationJob.findUnique({ where: { id: task.id }, select: { status: true } });
+        const existingRefund = await tx.creditTransaction.findFirst({
+          where: { relatedJobId: task.id, type: 'refund' },
+          select: { id: true }
+        });
+
+        const canRefund = shouldRefundJob({
+          status: currentJob?.status ?? 'failed',
+          hasRefundTransaction: Boolean(existingRefund)
+        });
+
+        if (!canRefund) {
+          await tx.generationJob.update({ where: { id: task.id }, data: { status: 'failed', errorMessage: (error as Error).message } });
+          return;
+        }
+
         await tx.generationJob.update({ where: { id: task.id }, data: { status: 'refunded', errorMessage: (error as Error).message } });
         await tx.user.update({ where: { id: task.userId }, data: { credits: { increment: task.creditCost } } });
         await tx.creditTransaction.create({
