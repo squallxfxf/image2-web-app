@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import type { PromptTargetType } from '@/types/domain';
 import { PromptOptimizeDialog } from './PromptOptimizeDialog';
+import { PromptVersionHistory } from './PromptVersionHistory';
 
 export function PromptEditor({
   generatedImageId,
@@ -20,6 +21,8 @@ export function PromptEditor({
   const [editing, setEditing] = useState(false);
   const [text, setText] = useState(value);
   const [showOpt, setShowOpt] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [history, setHistory] = useState([]);
 
   const save = async () => {
     const res = await fetch(`/api/images/${generatedImageId}`, {
@@ -33,6 +36,15 @@ export function PromptEditor({
     }
   };
 
+  const loadHistory = async () => {
+    const res = await fetch(`/api/images/${generatedImageId}/versions?type=${targetType}`);
+    const data = await res.json();
+    if (res.ok) {
+      setHistory(data.items ?? []);
+      setShowHistory(true);
+    }
+  };
+
   return (
     <div className="space-y-2">
       {editing ? <textarea className="w-full rounded border p-2" value={text} onChange={(e: any) => setText((e.target as HTMLTextAreaElement).value)} /> : <p className="whitespace-pre-wrap text-sm">{text}</p>}
@@ -41,8 +53,10 @@ export function PromptEditor({
         <button onClick={() => setEditing((v: any) => !v)} className="rounded border px-2 py-1">编辑</button>
         <button onClick={save} className="rounded border px-2 py-1">保存</button>
         <button onClick={() => setShowOpt((v: any) => !v)} className="rounded border px-2 py-1">AI优化</button>
+        <button onClick={loadHistory} className="rounded border px-2 py-1">历史版本</button>
       </div>
-      {showOpt && <PromptOptimizeDialog generatedImageId={generatedImageId} targetType={targetType} currentContent={text} onDone={(v: any) => { setText(v); onSaved(v); setShowOpt(false); }} />}
+      {showOpt && <PromptOptimizeDialog generatedImageId={generatedImageId} targetType={targetType} currentContent={text} onDone={(v) => { setText(v); onSaved(v); setShowOpt(false); }} />}
+      {showHistory && <PromptVersionHistory items={history} onUse={(content) => setText(content)} />}
     </div>
   );
 }

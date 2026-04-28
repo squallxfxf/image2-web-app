@@ -53,6 +53,7 @@ docker compose up --build
 - `PATCH /api/images/:id`
 - `GET /api/images`
 - `GET /api/images/export?format=csv|xlsx`
+- `GET /api/images/:id/versions?type=image_description|image2_prompt|ltx_prompt|wan_prompt`
 
 
 ## 第二阶段（已预留）
