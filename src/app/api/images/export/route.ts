@@ -12,7 +12,7 @@ export async function GET(req: Request) {
     const format = new URL(req.url).searchParams.get('format') ?? 'csv';
     const images = await prisma.generatedImage.findMany({ where: { userId }, orderBy: { createdAt: 'desc' } });
 
-    const rows = images.map((img) => ({
+    const rows = images.map((img: any) => ({
       图片URL: img.imageUrl,
       图片描述: img.imageDescription ?? '',
       IMAGE2提示词: img.image2Prompt,

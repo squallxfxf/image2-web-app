@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { PromptTabs } from './PromptTabs';
 import { ImagePreviewModal } from './ImagePreviewModal';
 
-export function GeneratedImageCard({ image, refresh }: { image: any; refresh: () => void }) {
+export function GeneratedImageCard({ image, refresh }: { key?: any; image: any; refresh: () => void }) {
   const [preview, setPreview] = useState(false);
 
   const toggleFavorite = async () => {

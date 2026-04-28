@@ -6,8 +6,8 @@ import { GeneratedImageList } from './GeneratedImageList';
 import { CreditBalance } from './CreditBalance';
 
 export function ImageStudioPage() {
-  const [images, setImages] = useState<any[]>([]);
-  const [jobId, setJobId] = useState<string | null>(null);
+  const [images, setImages] = useState([]);
+  const [jobId, setJobId] = useState(null);
 
   const refresh = async () => {
     const res = await fetch('/api/images?page=1&pageSize=30');

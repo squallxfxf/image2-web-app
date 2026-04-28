@@ -10,7 +10,7 @@ const client = new S3Client({
   }
 });
 
-export async function uploadImageBuffer(key: string, body: Buffer, contentType: string) {
+export async function uploadImageBuffer(key: string, body: any, contentType: string) {
   await client.send(
     new PutObjectCommand({
       Bucket: process.env.S3_BUCKET,

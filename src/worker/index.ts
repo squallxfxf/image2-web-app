@@ -1,4 +1,3 @@
-import type { Prisma } from '@prisma/client';
 import { Worker } from 'bullmq';
 import { prisma } from '@/lib/prisma';
 import { redis } from '@/lib/redis';
@@ -79,7 +78,7 @@ new Worker(
       await prisma.generationJob.update({ where: { id: task.id }, data: { status: 'completed' } });
     } catch (error) {
       logger.error('worker failed', error);
-      await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+      await prisma.$transaction(async (tx: any) => {
         await tx.generationJob.update({ where: { id: task.id }, data: { status: 'refunded', errorMessage: (error as Error).message } });
         await tx.user.update({ where: { id: task.userId }, data: { credits: { increment: task.creditCost } } });
         await tx.creditTransaction.create({

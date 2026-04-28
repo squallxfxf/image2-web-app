@@ -6,10 +6,10 @@ export function PromptInputPanel({ onCreated }: { onCreated: (jobId: string) => 
   const [prompt, setPrompt] = useState('');
   const [negativePrompt, setNegativePrompt] = useState('');
   const [style, setStyle] = useState('realistic');
-  const [aspectRatio, setAspectRatio] = useState<'1:1' | '9:16' | '16:9' | '4:3' | '3:4'>('1:1');
+  const [aspectRatio, setAspectRatio] = useState('1:1');
   const [count, setCount] = useState(1);
-  const [quality, setQuality] = useState<'low' | 'medium' | 'high' | 'auto'>('medium');
-  const [outputFormat, setOutputFormat] = useState<'png' | 'jpeg' | 'webp'>('png');
+  const [quality, setQuality] = useState('medium');
+  const [outputFormat, setOutputFormat] = useState('png');
 
   const submit = async () => {
     const res = await fetch('/api/generate/image', {
@@ -24,18 +24,18 @@ export function PromptInputPanel({ onCreated }: { onCreated: (jobId: string) => 
 
   return (
     <div className="space-y-3 rounded-xl border bg-white p-4">
-      <textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} className="w-full rounded border p-2" placeholder="主提示词" />
-      <textarea value={negativePrompt} onChange={(e) => setNegativePrompt(e.target.value)} className="w-full rounded border p-2" placeholder="负面提示词" />
-      <input value={style} onChange={(e) => setStyle(e.target.value)} className="w-full rounded border p-2" placeholder="风格" />
+      <textarea value={prompt} onChange={(e: any) => setPrompt(e.target.value)} className="w-full rounded border p-2" placeholder="主提示词" />
+      <textarea value={negativePrompt} onChange={(e: any) => setNegativePrompt(e.target.value)} className="w-full rounded border p-2" placeholder="负面提示词" />
+      <input value={style} onChange={(e: any) => setStyle(e.target.value)} className="w-full rounded border p-2" placeholder="风格" />
       <div className="grid grid-cols-2 gap-2">
-        <select value={aspectRatio} onChange={(e) => setAspectRatio(e.target.value as any)} className="rounded border p-2">
+        <select value={aspectRatio} onChange={(e: any) => setAspectRatio(e.target.value as any)} className="rounded border p-2">
           {['1:1', '9:16', '16:9', '4:3', '3:4'].map((a) => <option key={a}>{a}</option>)}
         </select>
-        <input type="number" min={1} max={4} value={count} onChange={(e) => setCount(Number(e.target.value))} className="rounded border p-2" />
-        <select value={quality} onChange={(e) => setQuality(e.target.value as any)} className="rounded border p-2">
+        <input type="number" min={1} max={4} value={count} onChange={(e: any) => setCount(Number(e.target.value))} className="rounded border p-2" />
+        <select value={quality} onChange={(e: any) => setQuality(e.target.value as any)} className="rounded border p-2">
           {['low', 'medium', 'high', 'auto'].map((a) => <option key={a}>{a}</option>)}
         </select>
-        <select value={outputFormat} onChange={(e) => setOutputFormat(e.target.value as any)} className="rounded border p-2">
+        <select value={outputFormat} onChange={(e: any) => setOutputFormat(e.target.value as any)} className="rounded border p-2">
           {['png', 'jpeg', 'webp'].map((a) => <option key={a}>{a}</option>)}
         </select>
       </div>

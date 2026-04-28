@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 export function CreditBalance() {
-  const [credits, setCredits] = useState<number>(0);
+  const [credits, setCredits] = useState(0);
 
   useEffect(() => {
     fetch('/api/me').then(async (r) => setCredits((await r.json()).credits ?? 0)).catch(() => setCredits(0));

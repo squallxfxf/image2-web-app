@@ -30,7 +30,7 @@ export function PromptOptimizeDialog({
     <div className="rounded border p-3">
       <p className="mb-2 text-sm">当前内容</p>
       <p className="mb-2 max-h-32 overflow-y-auto whitespace-pre-wrap rounded bg-slate-100 p-2 text-sm">{currentContent}</p>
-      <textarea className="w-full rounded border p-2" value={instruction} onChange={(e) => setInstruction(e.target.value)} placeholder="输入补充要求" />
+      <textarea className="w-full rounded border p-2" value={instruction} onChange={(e: any) => setInstruction(e.target.value)} placeholder="输入补充要求" />
       <button className="mt-2 rounded bg-black px-3 py-1 text-white" onClick={optimize}>生成新版本</button>
     </div>
   );

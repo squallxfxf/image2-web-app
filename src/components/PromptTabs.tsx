@@ -6,7 +6,7 @@ import { PromptEditor } from './PromptEditor';
 type TabKey = 'desc' | 'image2' | 'ltx' | 'wan';
 
 export function PromptTabs({ image, onChanged }: { image: any; onChanged: () => void }) {
-  const [tab, setTab] = useState<TabKey>('desc');
+  const [tab, setTab] = useState('desc');
 
   const config = useMemo(
     () => ({

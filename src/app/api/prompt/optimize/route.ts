@@ -1,4 +1,3 @@
-import type { Prisma } from '@prisma/client';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { optimizeSchema } from '@/lib/schemas';
@@ -29,7 +28,7 @@ export async function POST(req: Request) {
 
     const currentVersion = await prisma.promptVersion.count({ where: { generatedImageId: image.id, type: body.targetType } });
 
-    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    await prisma.$transaction(async (tx: any) => {
       await tx.promptConversation.create({
         data: {
           generatedImageId: image.id,
