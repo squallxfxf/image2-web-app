@@ -1,0 +1,40 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: image2
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  redis:
+    image: redis:7
+    ports:
+      - '6379:6379'
+  web:
+    image: node:20
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: sh -c "npm install && npx prisma generate && npm run dev"
+    ports:
+      - '3000:3000'
+    env_file: .env
+    depends_on:
+      - postgres
+      - redis
+  worker:
+    image: node:20
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: sh -c "npm install && npx prisma generate && npm run worker"
+    env_file: .env
+    depends_on:
+      - postgres
+      - redis
+volumes:
+  pgdata:

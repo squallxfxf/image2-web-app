@@ -1,0 +1,196 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  user
+  admin
+}
+
+enum JobStatus {
+  queued
+  processing
+  completed
+  failed
+  refunded
+}
+
+enum ImageStatus {
+  processing
+  completed
+  failed
+}
+
+enum PromptTargetType {
+  image_description
+  image2_prompt
+  ltx_prompt
+  wan_prompt
+}
+
+enum CreditTransactionType {
+  charge
+  consume
+  refund
+  admin_adjust
+}
+
+model User {
+  id                 String              @id @default(cuid())
+  name               String?
+  email              String              @unique
+  image              String?
+  passwordHash       String?
+  role               UserRole            @default(user)
+  credits            Int                 @default(100)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  jobs               GenerationJob[]
+  generatedImages    GeneratedImage[]
+  creditTransactions CreditTransaction[]
+  promptBlockLogs    PromptBlockLog[]
+  adminActions       AdminActionLog[]    @relation("AdminActions")
+  accounts           Account[]
+  sessions           Session[]
+}
+
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model GenerationJob {
+  id            String           @id @default(cuid())
+  userId        String
+  user          User             @relation(fields: [userId], references: [id])
+  status        JobStatus        @default(queued)
+  prompt        String
+  negativePrompt String?
+  aspectRatio   String
+  quality       String
+  style         String?
+  count         Int
+  outputFormat  String           @default("png")
+  creditCost    Int
+  errorMessage  String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  images        GeneratedImage[]
+  transactions  CreditTransaction[]
+}
+
+model GeneratedImage {
+  id               String               @id @default(cuid())
+  userId           String
+  user             User                 @relation(fields: [userId], references: [id])
+  jobId            String
+  job              GenerationJob        @relation(fields: [jobId], references: [id])
+  imageUrl         String
+  thumbnailUrl     String?
+  image2Prompt     String
+  negativePrompt   String?
+  imageDescription String?
+  ltxPrompt        String?
+  wanPrompt        String?
+  aspectRatio      String
+  quality          String
+  style            String?
+  seed             Int?
+  status           ImageStatus          @default(processing)
+  isFavorite       Boolean              @default(false)
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  versions         PromptVersion[]
+  conversations    PromptConversation[]
+}
+
+model PromptVersion {
+  id               String            @id @default(cuid())
+  generatedImageId String
+  generatedImage   GeneratedImage    @relation(fields: [generatedImageId], references: [id])
+  type             PromptTargetType
+  content          String
+  userInstruction  String?
+  versionNumber    Int
+  isCurrent        Boolean           @default(true)
+  createdAt        DateTime          @default(now())
+
+  @@index([generatedImageId, type])
+}
+
+model PromptConversation {
+  id               String            @id @default(cuid())
+  generatedImageId String
+  generatedImage   GeneratedImage    @relation(fields: [generatedImageId], references: [id])
+  targetType       PromptTargetType
+  userMessage      String
+  aiResponse       String
+  createdAt        DateTime          @default(now())
+}
+
+model CreditTransaction {
+  id           String                @id @default(cuid())
+  userId       String
+  user         User                  @relation(fields: [userId], references: [id])
+  type         CreditTransactionType
+  amount       Int
+  reason       String
+  relatedJobId String?
+  relatedJob   GenerationJob?        @relation(fields: [relatedJobId], references: [id])
+  createdAt    DateTime              @default(now())
+}
+
+model PromptBlockLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  prompt    String
+  reason    String
+  createdAt DateTime @default(now())
+}
+
+model AdminActionLog {
+  id          String   @id @default(cuid())
+  adminUserId String
+  adminUser   User     @relation("AdminActions", fields: [adminUserId], references: [id])
+  action      String
+  targetId    String
+  detail      String
+  createdAt   DateTime @default(now())
+}
