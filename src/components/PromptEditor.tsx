@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import type { PromptTargetType } from '@/types/domain';
 import { PromptOptimizeDialog } from './PromptOptimizeDialog';
 
 export function PromptEditor({
@@ -12,7 +13,7 @@ export function PromptEditor({
 }: {
   generatedImageId: string;
   field: 'imageDescription' | 'image2Prompt' | 'ltxPrompt' | 'wanPrompt';
-  targetType: 'image_description' | 'image2_prompt' | 'ltx_prompt' | 'wan_prompt';
+  targetType: PromptTargetType;
   value: string;
   onSaved: (v: string) => void;
 }) {
@@ -34,7 +35,7 @@ export function PromptEditor({
 
   return (
     <div className="space-y-2">
-      {editing ? <textarea className="w-full rounded border p-2" value={text} onChange={(e: any) => setText(e.target.value)} /> : <p className="whitespace-pre-wrap text-sm">{text}</p>}
+      {editing ? <textarea className="w-full rounded border p-2" value={text} onChange={(e: any) => setText((e.target as HTMLTextAreaElement).value)} /> : <p className="whitespace-pre-wrap text-sm">{text}</p>}
       <div className="flex flex-wrap gap-2 text-xs">
         <button onClick={() => navigator.clipboard.writeText(text)} className="rounded border px-2 py-1">复制</button>
         <button onClick={() => setEditing((v: any) => !v)} className="rounded border px-2 py-1">编辑</button>

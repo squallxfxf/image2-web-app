@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import type { GeneratedImageCardModel } from '@/types/domain';
 import { PromptTabs } from './PromptTabs';
 import { ImagePreviewModal } from './ImagePreviewModal';
 
-export function GeneratedImageCard({ image, refresh }: { key?: any; image: any; refresh: () => void }) {
+export function GeneratedImageCard({ image, refresh }: { image: GeneratedImageCardModel; refresh: () => void }) {
   const [preview, setPreview] = useState(false);
 
   const toggleFavorite = async () => {
@@ -17,7 +18,7 @@ export function GeneratedImageCard({ image, refresh }: { key?: any; image: any; 
   };
 
   return (
-    <div className="rounded-xl border bg-white p-3">
+    <div className="rounded-xl border bg-white p-3 shadow-sm">
       <img src={image.imageUrl} className="h-52 w-full cursor-pointer rounded object-cover" onClick={() => setPreview(true)} />
       <div className="mt-2 flex gap-2 text-xs">
         <a href={image.imageUrl} download className="rounded border px-2 py-1">下载</a>

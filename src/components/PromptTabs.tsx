@@ -1,11 +1,12 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import type { GeneratedImageCardModel, PromptTargetType } from '@/types/domain';
 import { PromptEditor } from './PromptEditor';
 
 type TabKey = 'desc' | 'image2' | 'ltx' | 'wan';
 
-export function PromptTabs({ image, onChanged }: { image: any; onChanged: () => void }) {
+export function PromptTabs({ image, onChanged }: { image: GeneratedImageCardModel; onChanged: () => void }) {
   const [tab, setTab] = useState('desc');
 
   const config = useMemo(
@@ -29,7 +30,13 @@ export function PromptTabs({ image, onChanged }: { image: any; onChanged: () => 
           </button>
         ))}
       </div>
-      <PromptEditor generatedImageId={image.id} field={current.field as any} targetType={current.targetType as any} value={current.value} onSaved={onChanged} />
+      <PromptEditor
+        generatedImageId={image.id}
+        field={current.field as 'imageDescription' | 'image2Prompt' | 'ltxPrompt' | 'wanPrompt'}
+        targetType={current.targetType as PromptTargetType}
+        value={current.value}
+        onSaved={onChanged}
+      />
     </div>
   );
 }

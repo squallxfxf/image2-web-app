@@ -53,3 +53,9 @@ docker compose up --build
 - `PATCH /api/images/:id`
 - `GET /api/images`
 - `GET /api/images/export?format=csv|xlsx`
+
+
+## 第二阶段（已预留）
+- Stripe Checkout 会话接口：`POST /api/billing/create-checkout-session`
+- SSE 任务状态流：`GET /api/jobs/:id/stream`
+- 管理端成本统计接口：`GET /api/admin/costs`
