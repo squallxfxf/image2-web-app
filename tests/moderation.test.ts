@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { moderatePrompt } from '../src/lib/moderation';
+import { moderatePrompt } from '../src/lib/moderation.ts';
 
 describe('moderatePrompt', () => {
   it('blocks risky content', () => {

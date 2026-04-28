@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { calcCreditCost } from '../src/lib/credits';
+import { calcCreditCost } from '../src/lib/credits.ts';
 
 describe('calcCreditCost', () => {
   it('returns higher cost for high quality', () => {

@@ -1,11 +1,7 @@
 import { prisma } from '@/lib/prisma';
+import { PROMPT_FIELD_MAP } from './constants';
 
-export const promptFieldMap = {
-  imageDescription: 'image_description',
-  image2Prompt: 'image2_prompt',
-  ltxPrompt: 'ltx_prompt',
-  wanPrompt: 'wan_prompt'
-} as const;
+export const promptFieldMap = PROMPT_FIELD_MAP;
 
 export type PromptEditableField = keyof typeof promptFieldMap;
 
