@@ -26,3 +26,6 @@ declare namespace JSX {
 }
 
 declare function require(name: string): any;
+
+declare module 'node:test';
+declare module 'node:assert/strict';
